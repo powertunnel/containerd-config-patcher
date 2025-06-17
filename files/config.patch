@@ -1,0 +1,30 @@
+--- work4	2025-06-17 07:42:27.616883214 -0400
++++ work	2025-06-17 06:38:56.274629119 -0400
+@@ -161,20 +161,19 @@
+     [plugins."io.containerd.grpc.v1.cri".registry]
+       config_path = ""
+ 
+-      [plugins."io.containerd.grpc.v1.cri".registry.mirrors."192.168.1.19:5000"]
+-        endpoint = ["http://192.168.1.19:5000"]
++      [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
++        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."192.168.55.155:5000"]
++          endpoint = ["http://192.168.55.155:5000"]
++            insecure_skip_verify = true
+ 
+-      [plugins."io.containerd.grpc.v1.cri".registry.configs."192.168.1.19:5000".tls]
+-        insecure_skip_verify = true
++      [plugins."io.containerd.grpc.v1.cri".registry.configs]
++        [plugins."io.containerd.grpc.v1.cri".registry.configs."192.168.55.155:5000".tls]
++          insecure_skip_verify = true
+ 
+       [plugins."io.containerd.grpc.v1.cri".registry.auths]
+ 
+-      [plugins."io.containerd.grpc.v1.cri".registry.configs]
+-
+       [plugins."io.containerd.grpc.v1.cri".registry.headers]
+ 
+-      [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
+-
+     [plugins."io.containerd.grpc.v1.cri".x509_key_pair_streaming]
+       tls_cert_file = ""
+       tls_key_file = ""

@@ -1,0 +1,40 @@
+- name: Patch containerd config.toml on worker node
+  hosts: workers
+  become: yes
+  tasks:
+
+    - name: Ensure patch is installed
+      apt:
+        name: patch
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Copy patch file to remote
+      copy:
+        src: config.patch
+        dest: /tmp/config.patch
+        mode: '0644'
+
+    - name: Backup current containerd config
+      copy:
+        src: /etc/containerd/config.toml
+        dest: /etc/containerd/config.toml.bak
+        remote_src: yes
+
+    - name: Dry-run patch to check applicability
+      command: patch --dry-run /etc/containerd/config.toml /tmp/config.patch
+      register: patch_check
+      failed_when: patch_check.rc != 0 and "'Reversed' not in patch_check.stdout"
+      changed_when: false
+
+    - name: Apply patch to containerd config
+      command: patch /etc/containerd/config.toml /tmp/config.patch
+      when: patch_check.rc == 0
+      notify: Restart containerd
+
+  handlers:
+    - name: Restart containerd
+      systemd:
+        name: containerd
+        state: restarted
+        enabled: yes
